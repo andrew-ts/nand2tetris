@@ -23,10 +23,15 @@ int main(int argc, char **argv) {
     if (ext != "vm") {
         std::cout << "file must be of vm extension\n";
     }
+    std::string outFile(baseName);
+    outFile.append(".asm");
     std::fstream input(src, std::ios_base::in);
+    std::fstream output(outFile, std::ios_base::out);
+
     Parser parser(input);
     while (parser.hasNext()) {
-        std::cout << parser.command();
+        // std::cout << (*parser.command().get());
+        parser.command()->toStream(output);
     }
     return 0;
 }
