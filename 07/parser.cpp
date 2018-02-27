@@ -91,6 +91,11 @@ std::unique_ptr<Command> Parser::parsePush(const std::vector<std::string> &token
         return std::make_unique<PushSegmentCommand>(Segment::that_, param);
     } else if (tokens[1] == "temp") {
         return std::make_unique<PushTempCommand>(param);
+    } else if (tokens[1] == "pointer") {
+        assert(param == 0 || param == 1);
+        return std::make_unique<PushPointerCommand>(param);
+    } else if (tokens[1] == "static") {
+        return std::make_unique<PushStaticCommand>("foo", param);
     }
     return std::make_unique<DumpCommand>();
 }
@@ -110,6 +115,11 @@ std::unique_ptr<Command> Parser::parsePop(const std::vector<std::string> &tokens
         return std::make_unique<PopSegmentCommand>(Segment::that_, param);
     } else if (tokens[1] == "temp") {
         return std::make_unique<PopTempCommand>(param);
+    } else if (tokens[1] == "pointer") {
+        assert(param == 0 || param == 1);
+        return std::make_unique<PopPointerCommand>(param);
+    } else if (tokens[1] == "static") {
+        return std::make_unique<PopStaticCommand>("foo", param);
     }
     return std::make_unique<DumpCommand>();
 }

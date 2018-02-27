@@ -174,6 +174,114 @@ void print(std::ostream& os) const override {
 int constant;
 };
 
+class PushPointerCommand : public Command {
+public:
+PushPointerCommand(int c) : constant(c) {}
+
+private:
+void print(std::ostream& os) const override {
+    std::string segment = "THIS";
+    if (constant == 1) {
+        segment = "THAT";
+    }
+
+    // @segment
+    // D = M
+    // @SP
+    // A = M
+    // M = D
+    // @SP
+    // M = M + 1
+    os << "// push pointer " << constant << '\n'
+        << "@" << segment << "\n"
+        << "D = M\n"
+        << "@SP\n"
+        << "A = M\n"
+        << "M = D\n"
+        << "@SP\n"
+        << "M = M + 1" << std::endl;
+}
+int constant;
+};
+
+class PopPointerCommand : public Command {
+public:
+PopPointerCommand(int c) : constant(c) {}
+
+private:
+void print(std::ostream& os) const override {
+    std::string segment = "THIS";
+    if (constant == 1) {
+        segment = "THAT";
+    }
+
+    // @SP
+    // M = M - 1
+    // A = M
+    // D = M
+    // @segment
+    // M = D
+    os << "// pop pointer " << constant << '\n'
+        << "@SP\n"
+        << "M = M - 1\n"
+        << "A = M\n"
+        << "D = M\n"
+        << "@" << segment << "\n"
+        << "M = D" << std::endl;
+}
+int constant;
+};
+
+class PushStaticCommand : public Command {
+public:
+PushStaticCommand(const std::string &name, int c) : constant(c), label(name) {}
+
+private:
+void print(std::ostream& os) const override {
+    // @label.constant
+    // D = M
+    // @SP
+    // A = M
+    // M = D
+    // @SP
+    // M = M + 1
+    os << "// push static " << constant << '\n'
+        << "@" << label << "." << constant << "\n"
+        << "D = M\n"
+        << "@SP\n"
+        << "A = M\n"
+        << "M = D\n"
+        << "@SP\n"
+        << "M = M + 1" << std::endl;
+}
+int constant;
+std::string label;
+};
+
+class PopStaticCommand : public Command {
+public:
+PopStaticCommand(const std::string& name, int c) : constant(c), label(name) {}
+
+private:
+void print(std::ostream& os) const override {
+    // @SP
+    // M = M - 1
+    // A = M
+    // D = M
+    // @label.constant
+    // M = D
+    os << "// pop pointer " << constant << '\n'
+        << "@SP\n"
+        << "M = M - 1\n"
+        << "A = M\n"
+        << "D = M\n"
+        << "@" << label << "." << constant << "\n"
+        << "M = D" << std::endl;
+}
+int constant;
+std::string label;
+};
+
 class AddCommand : public Command {
 private:
 void print(std::ostream& os) const override {
